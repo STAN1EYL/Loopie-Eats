@@ -3,9 +3,10 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_2/consts.dart';
-import 'package:flutter_application_2/Home_Page(Navgate_Main)/home_page.dart';
+
 import 'package:flutter_gemini/flutter_gemini.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter_application_2/NavigatorFunction/app_shell.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -32,7 +33,6 @@ Future<void> main() async {
 }
 
 class MyApp extends StatelessWidget {
-  static final homeKey = GlobalKey<MyHomePageState>();
   const MyApp({super.key});
 
   // This widget is the root of your application.
@@ -57,7 +57,7 @@ class MyApp extends StatelessWidget {
         ),
       ),
 
-      home: const MyHomePage(title: 'Home Page'),
+      home: const AppShell(),  
     );
   }
 }

@@ -3,7 +3,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_application_2/AppAssets/AppAssetsPath.dart';
-//import 'package:flutter_application_2/main.dart';
+import 'package:flutter_application_2/NavigatorFunction/app_shell.dart';
 import 'package:flutter_application_2/Recipe_Page/recipe1_page.dart';
 import 'package:flutter_application_2/Profile_Page/profile_page.dart';
 import 'package:flutter_application_2/Alerts_Page/alerts_page.dart';
@@ -11,15 +11,6 @@ import 'package:flutter_application_2/Share_Page/share_page.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 //C:\Users\stanl\Desktop\flutter_app_dev\flutter_application_2\lib\Alerts_Page\alerts_page.dart
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-
-  final String title;
-
-  @override
-  MyHomePageState createState() => MyHomePageState(); //go to ==> Home_Page/home_page.dart
-}
-
 class HomePage extends StatefulWidget {
   final void Function(int) onTabSelected;
   const HomePage({super.key, required this.onTabSelected});
@@ -130,7 +121,7 @@ class _HomePageState extends State<HomePage>
               backgroundColor: Color.fromARGB(255, 123, 163, 111),
             ),
             onPressed:() {
-              widget.onTabSelected(2);
+              widget.onTabSelected(2);//AppShellState.switchTab(2)
             },
             icon: SvgPicture.asset(
               'fonts/alert.svg',
@@ -207,11 +198,20 @@ class _HomePageState extends State<HomePage>
     );
   }
 }
-
+/*
 class MyHomePageState extends State<MyHomePage> {
   var selectedIndex = 0;
   String firstMessage = "Nothing yet!";
   String scondMessage = "";
+
+    void _onShare(String first, String second) {
+      setState(() {
+        firstMessage = first;
+        scondMessage = second;
+        selectedIndex = 3;  // 切到 SharePage
+      });
+    }
+
   @override
   Widget build(BuildContext context) {
     
@@ -227,16 +227,7 @@ class MyHomePageState extends State<MyHomePage> {
         );
         break;
       case 1:
-        page = RecipePage(
-          onShare: (msg, secmsg) {
-            log("🔥 MyHomePageState.onShare 被调用，msg=$msg");
-            setState(() {
-              firstMessage = msg;
-              scondMessage = secmsg;
-              selectedIndex = 3; // 切到「分享」页
-            });
-          },
-        );
+        page = RecipePage(onShare: _onShare,);
         break;
       case 2:
         page = AlertsPage();
@@ -350,3 +341,5 @@ class MyHomePageState extends State<MyHomePage> {
     );
   }
 }
+*/
+

@@ -8,8 +8,11 @@ import 'package:google_fonts/google_fonts.dart';
 
 class RecipeGenerateResultRoute extends StatelessWidget {
   String get _uid => FirebaseAuth.instance.currentUser!.uid;
+
   final String result;
-  final void Function(String, String) onShare;
+
+  final void Function(String firstText, String secondText) onShare;
+
   const RecipeGenerateResultRoute({
     super.key,
     required this.result,
@@ -233,32 +236,21 @@ class RecipeGenerateResultRoute extends StatelessWidget {
                         onPressed: () async{
                           // 1. 產生想顯示在 SharePage 的文字
                           final firstText =
-                              "🎉 I cooked ${recipe.recipeName} and saved "
-                              "${100 - recipe.emissionsComparedToAverage}% carbon!";
-                          final secondText = "Reduced ${recipe.reducedCarbon} kg of carbon emissions";
-                          // 2. 呼叫回調；由 MyHomePageState 來切頁
-                          
-                          print(">>> Before onShare");
+                                  "🎉 I cooked ${recipe.recipeName} and saved "
+                                  "${100 - recipe.emissionsComparedToAverage}% carbon!";
 
-                          //onShare(firstText, secondText);
-                          Navigator.pop(context, [firstText, secondText]);
-                          print(">>> After onShare");
+                          final secondText = 
+                                  "Reduced ${recipe.reducedCarbon} kg of carbon emissions";
 
-                          Navigator.pop(context);
+                          onShare(firstText, secondText);
 
                           final double reduce = double.tryParse(recipe.reducedCarbon) ?? 0.0;
-                          //await FirebaseFirestore.instance.doc('stats/dismissCounter').update({'totalReduce': FieldValue.increment(reduce),});
-                          //Navigator.pop(context);
-                          
                           await FirebaseFirestore.instance
                               .collection('users')
                               .doc(_uid)
                               .collection('stats')
                               .doc('dismissCounter')
                               .update({'totalReduce': FieldValue.increment(reduce),});
-
-
-                          // 3. 關閉目前這一頁
                           
                         },
                         child: Text(

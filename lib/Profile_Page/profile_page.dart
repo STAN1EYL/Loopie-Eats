@@ -343,9 +343,8 @@ class ProfilePageState extends State<ProfilePage>
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text("You're now logged in!")),
         );
-        Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (_) => const DashboardPage()),
-        );
+        widget.onTabSelected(5);
+        Navigator.of(context).popUntil((r) => r.isFirst);
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Incorrect email or password')),
