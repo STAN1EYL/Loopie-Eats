@@ -1,5 +1,5 @@
 import 'dart:developer';
-
+import 'package:go_router/go_router.dart'; 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_application_2/AppAssets/AppAssetsPath.dart';
@@ -12,8 +12,10 @@ import 'package:google_fonts/google_fonts.dart';
 
 //C:\Users\stanl\Desktop\flutter_app_dev\flutter_application_2\lib\Alerts_Page\alerts_page.dart
 class HomePage extends StatefulWidget {
-  final void Function(int) onTabSelected;
-  const HomePage({super.key, required this.onTabSelected});
+  //final void Function(int) onTabSelected;
+  const HomePage({super.key, 
+    //required this.onTabSelected
+  });
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -93,7 +95,7 @@ class _HomePageState extends State<HomePage>
               backgroundColor: Color.fromARGB(255, 123, 163, 111),
             ),
             onPressed:() {
-              widget.onTabSelected(1); // 切換到 RecipePage（index 1）
+              context.go('/recipe'); // 切換到 RecipePage（index 1）
             },
             icon: SvgPicture.asset(
               'fonts/chefHat.svg',
@@ -121,7 +123,7 @@ class _HomePageState extends State<HomePage>
               backgroundColor: Color.fromARGB(255, 123, 163, 111),
             ),
             onPressed:() {
-              widget.onTabSelected(2);//AppShellState.switchTab(2)
+              context.go('/alerts');;//AppShellState.switchTab(2)
             },
             icon: SvgPicture.asset(
               'fonts/alert.svg',
@@ -149,7 +151,7 @@ class _HomePageState extends State<HomePage>
               backgroundColor: Color.fromARGB(255, 123, 163, 111),
             ),
             onPressed:() {
-              widget.onTabSelected(3);
+              context.go('/share');
             },
             icon: SvgPicture.asset(
               'fonts/upload.svg',
@@ -177,7 +179,7 @@ class _HomePageState extends State<HomePage>
               backgroundColor: Color.fromARGB(255, 123, 163, 111),
             ),
             onPressed:() {
-              widget.onTabSelected(4);
+              context.go('/profile');
             },
             icon: SvgPicture.asset(
               'fonts/profile.svg',

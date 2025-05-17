@@ -149,7 +149,6 @@ class SharePageState extends State<SharePage> {
               
                     // ===== 主要敘述（來自上一頁傳入的 message）=====
                     Text(
-                      //'Today, my Savory Broccoli & Pork Stir-Fry dish reduced carbon emissions by 65% compared to traditional cooking!',
                       widget.firstText,
                       style: GoogleFonts.quicksand(
                         fontSize: 17,
@@ -163,7 +162,6 @@ class SharePageState extends State<SharePage> {
                     // ===== 強調文字（示範寫死；可依需要抽成參數）=====
                     Text(
                       widget.secondText,
-                      //'Reduced 2.3 kg of carbon emissions',
                       style: GoogleFonts.quicksand(
                         fontWeight: FontWeight.w700,
                         fontSize: 19,
@@ -611,8 +609,7 @@ class SharePageState extends State<SharePage> {
               
                     // ===== 主要敘述（來自上一頁傳入的 message）=====
                     Text(
-                      'Today, my Savory Broccoli & Pork Stir-Fry dish reduced carbon emissions by 65% compared to traditional cooking!',
-                      //widget.firstText,
+                      widget.firstText,
                       style: GoogleFonts.quicksand(
                         fontSize: 17,
                         color: Colors.black87,
@@ -624,8 +621,8 @@ class SharePageState extends State<SharePage> {
               
                     // ===== 強調文字（示範寫死；可依需要抽成參數）=====
                     Text(
-                      //widget.secondText,
-                      'Reduced 2.3 kg of carbon emissions',
+                      widget.secondText,
+                      
                       style: GoogleFonts.quicksand(
                         fontWeight: FontWeight.w700,
                         fontSize: 19,

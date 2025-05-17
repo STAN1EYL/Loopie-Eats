@@ -2,17 +2,19 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_gemini/flutter_gemini.dart';
+import 'package:go_router/go_router.dart';
 
 
 class RecipePage extends StatefulWidget {
   /// 新增这个字段
-  final void Function(String promptResult) result;
+  //final void Function(String promptResult) result;
   /// 构造函数里接收这个回调
   const RecipePage({
     super.key,
-    required this.result,
+    //required this.result,
   });
 
   @override
@@ -104,7 +106,12 @@ class RecipePageState extends State<RecipePage> {
       final response = await Gemini.instance.prompt(parts: [Part.text(prompt)]);
       if (!mounted) return;
 
-      widget.result(response?.output ?? '無回應');
+      context.go(
+        '/result', 
+        extra: {
+          'result': response?.output ?? '無回應',
+        }
+      );
       
 
 } catch (e) {

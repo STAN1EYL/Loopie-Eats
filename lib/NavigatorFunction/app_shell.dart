@@ -11,7 +11,7 @@ import 'package:flutter_application_2/Recipe_Page/recipe1_page.dart';
 import 'package:flutter_application_2/Profile_Page/profile_page.dart';
 import 'package:flutter_application_2/Alerts_Page/alerts_page.dart';
 import 'package:flutter_application_2/Share_Page/share_page.dart';
-
+/*
 /// AppShell：整個 App 的外殼，管理底部 NavBar + 分頁邏輯
 class AppShell extends StatefulWidget {
   const AppShell({Key? key}) : super(key: key);
@@ -27,7 +27,6 @@ class AppShell extends StatefulWidget {
 class AppShellState extends State<AppShell> {
   int _selectedIndex = 0;
   String _firstText = "Nothing yet!", _secondText = "";
-  String _recipe = "";
   /// 切換到指定 tab
   void switchTab(int index) {
     setState(() => _selectedIndex = index);
@@ -35,10 +34,15 @@ class AppShellState extends State<AppShell> {
 
   /// 專門用來處理生成的食譜，並跳到 RecipeGenerateResultRoute
   void generateRecipe(String recipe) {
-      setState(() {
-      _recipe = recipe;
-      switchTab(11);
-    });
+    
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => RecipeGenerateResultRoute(
+                          result: recipe, 
+                          onShare: share
+                        ), 
+      )
+    );
   }
   
   /// 專門用來處理分享，並跳到 SharePage
@@ -48,6 +52,14 @@ class AppShellState extends State<AppShell> {
       _secondText = second;
       switchTab(3);
     });
+  }
+
+  void profileToDashboard(){
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => DashboardPage( ),
+      )
+    );
   }
 
   @override
@@ -60,9 +72,10 @@ class AppShellState extends State<AppShell> {
       case 1:
         page = RecipePage(result: generateRecipe);
         break;
+      /*
       case 11:
         page = RecipeGenerateResultRoute(onShare: share, result: _recipe,);
-        break;
+        break;*/
       case 2:
         page = AlertsPage();
         break;
@@ -70,105 +83,101 @@ class AppShellState extends State<AppShell> {
         page = SharePage(firstText: _firstText, secondText: _secondText);
         break;
       case 4:
-        page = ProfilePage(onTabSelected: switchTab);
+        page = ProfilePage(onTabSelected: profileToDashboard);
         break;
+      /*
       case 5:
         page = DashboardPage(onTabSelected: switchTab);
+        break;*/
       default:
         page = Center(child: Text("Unknown tab"));
     }
 
-    final navDestinations = <NavigationDestination> [
-      NavigationDestination(
-        selectedIcon: SvgPicture.asset(
-          'fonts/home.svg',
-          width: 30,
-          height: 30,
-          color: Color.fromARGB(255, 123, 163, 111),
-        ),
-        icon: SvgPicture.asset(
-          'fonts/home.svg',
-          width: 30,
-          height: 30,
-          color: Color.fromARGB(255, 107, 105, 105),
-        ),
-        label: 'Home',
-      ),
-      NavigationDestination(
-        selectedIcon: SvgPicture.asset(
-          'fonts/chefHat.svg',
-          width: 30,
-          height: 30,
-          color: Color.fromARGB(255, 123, 163, 111),
-        ),
-        icon: SvgPicture.asset(
-          'fonts/chefHat.svg',
-          width: 30,
-          height: 30,
-          color: Color.fromARGB(255, 107, 105, 105),
-        ),
-        label: 'Recipe',
-      ),
-      NavigationDestination(
-        selectedIcon: SvgPicture.asset(
-          'fonts/alert.svg',
-          width: 25,
-          height: 25,
-          color: Color.fromARGB(255, 123, 163, 111),
-        ),
-        icon: SvgPicture.asset(
-          'fonts/alert.svg',
-          width: 25,
-          height: 25,
-          color: Color.fromARGB(255, 107, 105, 105),
-        ),
-        label: 'Alerts',
-      ),
-      NavigationDestination(
-        selectedIcon: SvgPicture.asset(
-          'fonts/upload.svg',
-          width: 30,
-          height: 30,
-          color: Color.fromARGB(255, 123, 163, 111),
-        ),
-        icon: SvgPicture.asset(
-          'fonts/upload.svg',
-          width: 30,
-          height: 30,
-          color: Color.fromARGB(255, 107, 105, 105),
-        ),
-        label: 'Share',
-      ),
-      NavigationDestination(
-        selectedIcon: SvgPicture.asset(
-          'fonts/profile.svg',
-          width: 25,
-          height: 25,
-          color: Color.fromARGB(255, 123, 163, 111),
-        ),
-        icon: SvgPicture.asset(
-          'fonts/profile.svg',
-          width: 25,
-          height: 25,
-          color: Color.fromARGB(255, 107, 105, 105),
-        ),
-        label: 'Profile',
-      ),
-    ];
-
-    if(_selectedIndex < navDestinations.length + 1) {
-      return Scaffold(
-        body: page,
-        bottomNavigationBar: NavigationBar(
-          selectedIndex: _selectedIndex,
-          onDestinationSelected: switchTab,
-          destinations: navDestinations,
-        ),
-      );
-    }
+    
     return Scaffold(
       body: page,
+      bottomNavigationBar: NavigationBar(
+        selectedIndex: _selectedIndex,
+        onDestinationSelected: switchTab,
+        destinations: <Widget>[
+          NavigationDestination(
+            selectedIcon: SvgPicture.asset(
+              'fonts/home.svg',
+              width: 30,
+              height: 30,
+              color: Color.fromARGB(255, 123, 163, 111),
+            ),
+            icon: SvgPicture.asset(
+              'fonts/home.svg',
+              width: 30,
+              height: 30,
+              color: Color.fromARGB(255, 107, 105, 105),
+            ),
+            label: 'Home',
+          ),
+          NavigationDestination(
+            selectedIcon: SvgPicture.asset(
+              'fonts/chefHat.svg',
+              width: 30,
+              height: 30,
+              color: Color.fromARGB(255, 123, 163, 111),
+            ),
+            icon: SvgPicture.asset(
+              'fonts/chefHat.svg',
+              width: 30,
+              height: 30,
+              color: Color.fromARGB(255, 107, 105, 105),
+            ),
+            label: 'Recipe',
+          ),
+          NavigationDestination(
+            selectedIcon: SvgPicture.asset(
+              'fonts/alert.svg',
+              width: 25,
+              height: 25,
+              color: Color.fromARGB(255, 123, 163, 111),
+            ),
+            icon: SvgPicture.asset(
+              'fonts/alert.svg',
+              width: 25,
+              height: 25,
+              color: Color.fromARGB(255, 107, 105, 105),
+            ),
+            label: 'Alerts',
+          ),
+          NavigationDestination(
+            selectedIcon: SvgPicture.asset(
+              'fonts/upload.svg',
+              width: 30,
+              height: 30,
+              color: Color.fromARGB(255, 123, 163, 111),
+            ),
+            icon: SvgPicture.asset(
+              'fonts/upload.svg',
+              width: 30,
+              height: 30,
+              color: Color.fromARGB(255, 107, 105, 105),
+            ),
+            label: 'Share',
+          ),
+          NavigationDestination(
+            selectedIcon: SvgPicture.asset(
+              'fonts/profile.svg',
+              width: 25,
+              height: 25,
+              color: Color.fromARGB(255, 123, 163, 111),
+            ),
+            icon: SvgPicture.asset(
+              'fonts/profile.svg',
+              width: 25,
+              height: 25,
+              color: Color.fromARGB(255, 107, 105, 105),
+            ),
+            label: 'Profile',
+          ),
+        ],
+      ),
     );
-
   }
 }
+*/

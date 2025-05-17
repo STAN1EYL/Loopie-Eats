@@ -8,10 +8,16 @@ import 'package:flutter/services.dart'; // ← 新增
 import 'package:flutter_application_2/Profile_Page/dashboard_page.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:go_router/go_router.dart';
 
 class ProfilePage extends StatefulWidget {
-  final void Function(int) onTabSelected;
-  const ProfilePage({super.key, required this.onTabSelected,});
+
+  //final void Function() onTabSelected;
+
+  const ProfilePage({
+    super.key, 
+    //required this.onTabSelected,
+    });
 
   @override
   State<ProfilePage> createState() => ProfilePageState();
@@ -190,7 +196,6 @@ class ProfilePageState extends State<ProfilePage>
                                         FocusScope.of(context).unfocus();
                                         HardwareKeyboard.instance.clearState();
                                         await _auth.signout();
-                                        widget.onTabSelected(0);
                                       },
                                       icon: const Icon(Icons.logout_outlined, size: 18),
                                       label: Text('Sign Out', style: GoogleFonts.quicksand(fontSize: 16)),
@@ -319,7 +324,6 @@ class ProfilePageState extends State<ProfilePage>
       );
 
       log("User Created Succesfully");
-      widget.onTabSelected(0);
     }
   }
 
@@ -343,8 +347,8 @@ class ProfilePageState extends State<ProfilePage>
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text("You're now logged in!")),
         );
-        widget.onTabSelected(5);
-        Navigator.of(context).popUntil((r) => r.isFirst);
+        context.push('/dashboard');
+
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Incorrect email or password')),

@@ -2,8 +2,9 @@
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_application_2/App_Router/app_router.dart';
 import 'package:flutter_application_2/consts.dart';
-
+import 'package:go_router/go_router.dart';
 import 'package:flutter_gemini/flutter_gemini.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_application_2/NavigatorFunction/app_shell.dart';
@@ -38,8 +39,11 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return MaterialApp.router(
       title: 'Flutter Demo',
+      routerConfig: appRouter,
+      debugShowCheckedModeBanner: false,
+
       theme: ThemeData(
         useMaterial3: true,
         colorScheme: ColorScheme.fromSeed(
@@ -56,8 +60,6 @@ class MyApp extends StatelessWidget {
             ),
         ),
       ),
-
-      home: const AppShell(),  
     );
   }
 }

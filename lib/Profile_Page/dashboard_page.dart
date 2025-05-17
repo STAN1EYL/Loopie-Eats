@@ -5,6 +5,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:go_router/go_router.dart';
 
 // 如果你还要跳到其它 Tab，请 import 现有的页面
 import 'package:flutter_application_2/Home_Page(Navgate_Main)/home_page.dart';
@@ -14,9 +15,8 @@ import 'package:flutter_application_2/Share_Page/share_page.dart';
 import 'package:flutter_application_2/Profile_Page/profile_page.dart'; // 登录页回退用
 
 class DashboardPage extends StatefulWidget {
-  final void Function(int) onTabSelected;
-
-  const DashboardPage({super.key, required this.onTabSelected});
+  
+  const DashboardPage({super.key});
 
   @override
   State<DashboardPage> createState() => _DashboardPageState();
@@ -152,9 +152,7 @@ class _DashboardPageState extends State<DashboardPage> {
                             icon: const Icon(Icons.logout),
                             onPressed: () async {
                               await FirebaseAuth.instance.signOut();
-                              widget.onTabSelected(4);
-                              Navigator.of(context).popUntil((route) => route.isFirst);
-                              
+                              context.go('/profile');
                             },
                           ),
                         ],

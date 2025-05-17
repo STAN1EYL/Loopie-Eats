@@ -5,18 +5,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter_application_2/Recipe_data_process/recipe_parser.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:go_router/go_router.dart';
 
 class RecipeGenerateResultRoute extends StatelessWidget {
   String get _uid => FirebaseAuth.instance.currentUser!.uid;
 
   final String result;
 
-  final void Function(String firstText, String secondText) onShare;
+  //final void Function(String firstText, String secondText) onShare;
 
   const RecipeGenerateResultRoute({
     super.key,
     required this.result,
-    required this.onShare,
+    //required this.onShare,
   });
 
   @override
@@ -242,7 +243,16 @@ class RecipeGenerateResultRoute extends StatelessWidget {
                           final secondText = 
                                   "Reduced ${recipe.reducedCarbon} kg of carbon emissions";
 
-                          onShare(firstText, secondText);
+                          context.go(
+                            '/share',
+                            extra: {
+                              'firstText' : firstText,
+                              'secondText' :secondText,
+                            }
+                          );
+                          //onShare(firstText, secondText);
+
+                          Navigator.of(context).popUntil((route) => route.isFirst);
 
                           final double reduce = double.tryParse(recipe.reducedCarbon) ?? 0.0;
                           await FirebaseFirestore.instance
