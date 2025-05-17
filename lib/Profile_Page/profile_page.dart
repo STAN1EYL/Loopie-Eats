@@ -8,10 +8,16 @@ import 'package:flutter/services.dart'; // ← 新增
 import 'package:flutter_application_2/Profile_Page/dashboard_page.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:go_router/go_router.dart';
 
 class ProfilePage extends StatefulWidget {
-  final void Function(int) onTabSelected;
-  const ProfilePage({super.key, required this.onTabSelected,});
+
+  //final void Function() onTabSelected;
+
+  const ProfilePage({
+    super.key, 
+    //required this.onTabSelected,
+    });
 
   @override
   State<ProfilePage> createState() => ProfilePageState();
@@ -50,6 +56,16 @@ class ProfilePageState extends State<ProfilePage>
 
   @override
   Widget build(BuildContext content) {
+  // 如果已登入，就自動跳到 Dashboard
+    final user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      // 這個 go 會 replace 掉現在的 /profile
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        context.go('/dashboard');
+      });
+      // 先回傳一個空容器，等導航結束後再重畫
+      return SizedBox.shrink();
+    }
     return Scaffold(
       body: Center(
         
@@ -112,7 +128,7 @@ class ProfilePageState extends State<ProfilePage>
                           ),
                           labelColor: Colors.black,
                           unselectedLabelColor: Colors.grey,
-                          tabs: const <Widget>[Tab(text: 'Login'), Tab(text: 'Sign Up')],
+                          tabs: const <Widget>[Tab(text: 'Log In'), Tab(text: 'Sign Up')],
                         ),
                     ),
                     Expanded(
@@ -172,7 +188,7 @@ class ProfilePageState extends State<ProfilePage>
                                         _login();
                                       },
                                       icon: const Icon(Icons.login_rounded, size: 18),
-                                      label: Text('Sign In', style: GoogleFonts.quicksand(fontSize: 16)),
+                                      label: Text('Log In', style: GoogleFonts.quicksand(fontSize: 16)),
                                     ),
                                   ),
                                   SizedBox(height: 20),
@@ -180,9 +196,10 @@ class ProfilePageState extends State<ProfilePage>
                                   SizedBox(
                                     width: double.infinity,
                                     height: 48,
+                                    /*
                                     child: ElevatedButton.icon(
                                       style: ElevatedButton.styleFrom(
-                                        backgroundColor: const Color(0xFF7DA969),
+                                        backgroundColor: const Color.fromARGB(255, 255, 255, 255),
                                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                                       ),
                                       onPressed: () async {
@@ -190,11 +207,11 @@ class ProfilePageState extends State<ProfilePage>
                                         FocusScope.of(context).unfocus();
                                         HardwareKeyboard.instance.clearState();
                                         await _auth.signout();
-                                        widget.onTabSelected(0);
                                       },
                                       icon: const Icon(Icons.logout_outlined, size: 18),
                                       label: Text('Sign Out', style: GoogleFonts.quicksand(fontSize: 16)),
                                     ),
+                                    */
                                   ),
                                 ],
                               ),
@@ -319,7 +336,6 @@ class ProfilePageState extends State<ProfilePage>
       );
 
       log("User Created Succesfully");
-      widget.onTabSelected(0);
     }
   }
 
@@ -343,9 +359,8 @@ class ProfilePageState extends State<ProfilePage>
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text("You're now logged in!")),
         );
-        Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (_) => const DashboardPage()),
-        );
+        context.push('/dashboard');
+
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Incorrect email or password')),

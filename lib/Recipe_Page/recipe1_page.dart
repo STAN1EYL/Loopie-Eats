@@ -2,23 +2,20 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_application_2/Home_Page(Navgate_Main)/home_page.dart';
-
-import 'package:flutter_application_2/Recipe_Page/recipe2_page_route.dart';
-import 'package:flutter_application_2/main.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_gemini/flutter_gemini.dart';
+import 'package:go_router/go_router.dart';
 
 
 class RecipePage extends StatefulWidget {
   /// 新增这个字段
-  final void Function(String firstMsg, String secondMsg) onShare;
-
+  //final void Function(String promptResult) result;
   /// 构造函数里接收这个回调
   const RecipePage({
-    Key? key,
-    required this.onShare,
-  }) : super(key: key);
+    super.key,
+    //required this.result,
+  });
 
   @override
   State<RecipePage> createState() => RecipePageState();
@@ -37,7 +34,7 @@ class RecipePageState extends State<RecipePage> {
   String? generatedResult;
 
   Future<void> _generateRecipe() async {
-    final homeState = context.findAncestorStateOfType<MyHomePageState>();
+    
     if(!_formKey.currentState!.validate()) return;
 
     setState(() {
@@ -108,41 +105,14 @@ class RecipePageState extends State<RecipePage> {
     try {
       final response = await Gemini.instance.prompt(parts: [Part.text(prompt)]);
       if (!mounted) return;
-      log(">>> [STEP2] RecipePage: pushing RecipeGenerateResultRoute, onShare=${widget.onShare}");
-      
-      
-      Navigator.push(   //前往建立的 route => (recipe2_page_route.dart)
-        context,
-        MaterialPageRoute(
-          builder: (_) => RecipeGenerateResultRoute(
-            result: response?.output ?? '無回應',
-            onShare: widget.onShare,
-            /*
-            // 這裡不要再抓 context，直接用剛剛存好的 homeState
-            onShare: (msg, secmsg) {
 
-              final homeState = MyApp.homeKey.currentState;
-
-              print(">>> onShare called, homeState = $homeState");
-
-              if (homeState != null) {
-
-                print(">>> Updating homeState");
-
-                homeState.setState(() {
-                  homeState.firstMessage = msg;   // 傳給 SharePage
-                  homeState.scondMessage = secmsg;
-                  homeState.selectedIndex = 3;    // 換到底部導覽列第 4 頁
-                });
-              } else {
-                
-                print(">>> ERROR: homeState is null!");
-              }
-            },
-            */
-          ),
-        ),
+      context.go(
+        '/result', 
+        extra: {
+          'result': response?.output ?? '無回應',
+        }
       );
+      
 
 } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('錯誤：$e')));

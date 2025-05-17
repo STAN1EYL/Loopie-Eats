@@ -5,15 +5,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter_application_2/Recipe_data_process/recipe_parser.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:go_router/go_router.dart';
 
 class RecipeGenerateResultRoute extends StatelessWidget {
   String get _uid => FirebaseAuth.instance.currentUser!.uid;
+
   final String result;
-  final void Function(String, String) onShare;
+
+  //final void Function(String firstText, String secondText) onShare;
+
   const RecipeGenerateResultRoute({
     super.key,
     required this.result,
-    required this.onShare,
+    //required this.onShare,
   });
 
   @override
@@ -233,32 +237,30 @@ class RecipeGenerateResultRoute extends StatelessWidget {
                         onPressed: () async{
                           // 1. 產生想顯示在 SharePage 的文字
                           final firstText =
-                              "🎉 I cooked ${recipe.recipeName} and saved "
-                              "${100 - recipe.emissionsComparedToAverage}% carbon!";
-                          final secondText = "Reduced ${recipe.reducedCarbon} kg of carbon emissions";
-                          // 2. 呼叫回調；由 MyHomePageState 來切頁
-                          
-                          print(">>> Before onShare");
+                                  "🎉 I cooked ${recipe.recipeName} and saved "
+                                  "${100 - recipe.emissionsComparedToAverage}% carbon!";
 
+                          final secondText = 
+                                  "Reduced ${recipe.reducedCarbon} kg of carbon emissions";
+
+                          context.go(
+                            '/share',
+                            extra: {
+                              'firstText' : firstText,
+                              'secondText' :secondText,
+                            }
+                          );
                           //onShare(firstText, secondText);
-                          Navigator.pop(context, [firstText, secondText]);
-                          print(">>> After onShare");
 
-                          Navigator.pop(context);
+                          Navigator.of(context).popUntil((route) => route.isFirst);
 
                           final double reduce = double.tryParse(recipe.reducedCarbon) ?? 0.0;
-                          //await FirebaseFirestore.instance.doc('stats/dismissCounter').update({'totalReduce': FieldValue.increment(reduce),});
-                          //Navigator.pop(context);
-                          
                           await FirebaseFirestore.instance
                               .collection('users')
                               .doc(_uid)
                               .collection('stats')
                               .doc('dismissCounter')
                               .update({'totalReduce': FieldValue.increment(reduce),});
-
-
-                          // 3. 關閉目前這一頁
                           
                         },
                         child: Text(

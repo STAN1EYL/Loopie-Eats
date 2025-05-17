@@ -1,5 +1,5 @@
 import 'dart:developer';
-
+import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -26,9 +26,9 @@ class AlertsPage extends StatefulWidget{
 class AlertsPageState extends State<AlertsPage> {
   List<Ingredient> _ingredients = []; //ingredient.dart
   IngredientFilter _currentFilter = IngredientFilter.all;
-  
+  String? _fridgeId;
+
   final TextEditingController _noteController = TextEditingController();
-  final List<String> _notes = [];
 
   @override
   void dispose() {
@@ -97,9 +97,45 @@ class AlertsPageState extends State<AlertsPage> {
 
   @override
   void initState() {
+    _loadFridgeId();
     super.initState();
     _loadIngredientsFromFirestore(); // 初始化讀取 Firestore 資料
   }
+
+  Future<void> _loadFridgeId() async {
+    final uid = FirebaseAuth.instance.currentUser!.uid;
+    final snap = await FirebaseFirestore.instance
+      .collection('fridges')
+      .where('members', arrayContains: uid)
+      .limit(1)
+      .get();
+    if (snap.docs.isNotEmpty) {
+      setState(() => _fridgeId = snap.docs.first.id);
+    }
+  }
+
+  Future<void> _addFridgeNote() async {
+    final text = _noteController.text.trim();
+    if (text.isEmpty || _fridgeId == null) return;
+
+    final user = FirebaseAuth.instance.currentUser!;
+    final ownerName = user.displayName ?? '匿名';
+
+    await FirebaseFirestore.instance
+      .collection('fridges')
+      .doc(_fridgeId)
+      .collection('notes')
+      .add({
+        'content': text,
+        'ownerUid': user.uid,
+        'ownerName': ownerName,
+        'timestamp': FieldValue.serverTimestamp(),
+      });
+
+    _noteController.clear();
+  }
+
+
 
   Future<void> _addIngredient(Ingredient newItem) async {
     final uid = FirebaseAuth.instance.currentUser!.uid;
@@ -257,7 +293,7 @@ class AlertsPageState extends State<AlertsPage> {
               ),
               margin: EdgeInsets.symmetric(vertical: 8),
               child: Padding(
-                padding: const EdgeInsets.all(12.0),
+                padding: const EdgeInsets.all(12.0),                
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -272,7 +308,7 @@ class AlertsPageState extends State<AlertsPage> {
                     ),
                     SizedBox(height: 8),
 
-                    // 顯示筆記列表
+                    // 顯示筆記列表（改成 StreamBuilder）
                     Container(
                       height: 80,
                       width: double.infinity,
@@ -281,36 +317,57 @@ class AlertsPageState extends State<AlertsPage> {
                         borderRadius: BorderRadius.circular(6),
                       ),
                       padding: EdgeInsets.all(8),
-                      child: _notes.isEmpty
-                        ? Text(
-                            'I left some bananas in the fridge!',
-                                style: GoogleFonts.quicksand(fontSize: 16, fontWeight: FontWeight.w700),
-                          )
-                        : ListView(
-                            children: _notes.map((t) => Padding(
-                              padding: const EdgeInsets.symmetric(vertical: 4),
-                              child: Text(
-                                t,
-                                style: GoogleFonts.quicksand(fontSize: 16, fontWeight: FontWeight.w700),
-                              ),
-                            )).toList(),
+                      child: (_fridgeId == null)
+                        ? Center(child: CircularProgressIndicator())
+                        : StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
+                            stream: FirebaseFirestore.instance
+                              .collection('fridges')
+                              .doc(_fridgeId)
+                              .collection('notes')
+                              .orderBy('timestamp', descending: true)
+                              .snapshots(),
+                            builder: (context, snap) {
+                              if (!snap.hasData) {
+                                return Center(child: CircularProgressIndicator());
+                              }
+                              final docs = snap.data!.docs;
+                              if (docs.isEmpty) {
+                                return Text(
+                                  'I left some bananas in the fridge!',
+                                  style: GoogleFonts.quicksand(
+                                    fontSize: 16, fontWeight: FontWeight.w700),
+                                );
+                              }
+                              return ListView(
+                                children: docs.map((doc) {
+                                  final content = doc.data()['content'] as String? ?? '';
+                                  return Padding(
+                                    padding: const EdgeInsets.symmetric(vertical: 4),
+                                    child: Text(
+                                      content,
+                                      style: GoogleFonts.quicksand(
+                                        fontSize: 16, fontWeight: FontWeight.w700),
+                                    ),
+                                  );
+                                }).toList(),
+                              );
+                            },
                           ),
                     ),
 
                     SizedBox(height: 8),
                     Divider(color: Colors.yellow.shade700),
 
-                    // 輸入框 + 送出按鈕
+                    // 輸入框 + 送出按鈕（改成呼叫 _addFridgeNote）
                     Row(
                       children: [
                         Expanded(
                           child: TextField(
-                            controller: _noteController,  // ← 加上 controller
+                            controller: _noteController,
                             decoration: InputDecoration(
                               hintText: 'Leave a note for your family…',
                               isDense: true,
-                              contentPadding: EdgeInsets.symmetric(
-                                  vertical: 8, horizontal: 12),
+                              contentPadding: EdgeInsets.symmetric(vertical: 8, horizontal: 12),
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(6),
                               ),
@@ -325,14 +382,7 @@ class AlertsPageState extends State<AlertsPage> {
                           ),
                           child: IconButton(
                             icon: Icon(Icons.send, color: Colors.white),
-                            onPressed: () {
-                              final text = _noteController.text.trim();
-                              if (text.isEmpty) return;
-                              setState(() {
-                                _notes.insert(0, text);     // 加到最前面
-                                _noteController.clear();    // 清空輸入框
-                              });
-                            },
+                            onPressed: _addFridgeNote,
                           ),
                         ),
                       ],
@@ -341,7 +391,6 @@ class AlertsPageState extends State<AlertsPage> {
                 ),
               ),
             ),
-
             SizedBox(height: 10),
 
             // —— 接著就是你原本的 Refrigerator Container ——

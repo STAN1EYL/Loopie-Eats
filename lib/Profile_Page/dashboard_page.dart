@@ -5,6 +5,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:go_router/go_router.dart';
 
 // 如果你还要跳到其它 Tab，请 import 现有的页面
 import 'package:flutter_application_2/Home_Page(Navgate_Main)/home_page.dart';
@@ -14,14 +15,15 @@ import 'package:flutter_application_2/Share_Page/share_page.dart';
 import 'package:flutter_application_2/Profile_Page/profile_page.dart'; // 登录页回退用
 
 class DashboardPage extends StatefulWidget {
-  const DashboardPage({Key? key}) : super(key: key);
+  
+  const DashboardPage({super.key});
 
   @override
   State<DashboardPage> createState() => _DashboardPageState();
 }
 
 class _DashboardPageState extends State<DashboardPage> {
-  int _selectedIndex = 4; // 一进来就选 Profile
+// 一进来就选 Profile
   final TextEditingController _inviteCtrl = TextEditingController();
   late final Stream<QuerySnapshot<Map<String, dynamic>>> _fridgeStream;
 
@@ -110,7 +112,8 @@ class _DashboardPageState extends State<DashboardPage> {
     _inviteCtrl.clear();
   }
 
-  Widget _buildProfileTab() {
+  @override
+  Widget build(BuildContext context) {
     final user = FirebaseAuth.instance.currentUser;
     final email = user?.email ?? '';
     final initial = email.isNotEmpty ? email[0].toUpperCase() : '?';
@@ -149,13 +152,7 @@ class _DashboardPageState extends State<DashboardPage> {
                             icon: const Icon(Icons.logout),
                             onPressed: () async {
                               await FirebaseAuth.instance.signOut();
-                              Navigator.of(context).pushAndRemoveUntil(
-                                MaterialPageRoute(
-                                  builder: (_) =>
-                                      const MyHomePage(title: 'Loopie Eats'),
-                                ),
-                                (route) => false,
-                              );
+                              context.go('/profile');
                             },
                           ),
                         ],
@@ -349,70 +346,11 @@ class _DashboardPageState extends State<DashboardPage> {
       ),
     );
   }
-
-  Widget _buildBody() {
-    switch (_selectedIndex) {
-      case 0:
-        return HomePage(onTabSelected: (_) {});
-      case 1:
-        return RecipePage(
-              onShare: (firstMsg, secondMsg) {
-                setState(() {
-                _selectedIndex = 3;
-                });
-              },
-        );
-      case 2:
-        return AlertsPage();
-      case 3:
-        return SharePage(firstText: '', secondText: '');
-      case 4:
-        return _buildProfileTab();
-      default:
-        return const SizedBox.shrink();
-    }
-  }
-
+  /*
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: _buildBody(),
-      bottomNavigationBar: NavigationBar(
-        selectedIndex: _selectedIndex,
-        onDestinationSelected: (i) => setState(() => _selectedIndex = i),
-        destinations: [
-          NavigationDestination(
-            icon: SvgPicture.asset('fonts/home.svg', color: Colors.grey),
-            selectedIcon: SvgPicture.asset('fonts/home.svg',
-                color: const Color(0xFF7DA969)),
-            label: 'Home',
-          ),
-          NavigationDestination(
-            icon: SvgPicture.asset('fonts/chefHat.svg', color: Colors.grey),
-            selectedIcon: SvgPicture.asset('fonts/chefHat.svg',
-                color: const Color(0xFF7DA969)),
-            label: 'Recipe',
-          ),
-          NavigationDestination(
-            icon: SvgPicture.asset('fonts/alert.svg', color: Colors.grey),
-            selectedIcon: SvgPicture.asset('fonts/alert.svg',
-                color: const Color(0xFF7DA969)),
-            label: 'Alerts',
-          ),
-          NavigationDestination(
-            icon: SvgPicture.asset('fonts/upload.svg', color: Colors.grey),
-            selectedIcon: SvgPicture.asset('fonts/upload.svg',
-                color: const Color(0xFF7DA969)),
-            label: 'Share',
-          ),
-          NavigationDestination(
-            icon: SvgPicture.asset('fonts/profile.svg', color: Colors.grey),
-            selectedIcon: SvgPicture.asset('fonts/profile.svg',
-                color: const Color(0xFF7DA969)),
-            label: 'Profile',
-          ),
-        ],
-      ),
-    );
-  }
+    // TODO: implement build
+    throw UnimplementedError();
+  }*/
+
 }

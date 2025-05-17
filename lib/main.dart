@@ -2,8 +2,9 @@
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_application_2/App_Router/app_router.dart';
 import 'package:flutter_application_2/consts.dart';
-import 'package:flutter_application_2/Home_Page(Navgate_Main)/home_page.dart';
+import 'package:go_router/go_router.dart';
 import 'package:flutter_gemini/flutter_gemini.dart';
 import 'package:firebase_core/firebase_core.dart';
 
@@ -12,13 +13,13 @@ Future<void> main() async {
   if(kIsWeb) {
     await Firebase.initializeApp(
       options: FirebaseOptions(
-        apiKey: "AIzaSyArYiYo8U2dg5tcw2A4fsMwTk8MDJCMsx8",
-        authDomain: "greenheart-aecb6.firebaseapp.com",
-        projectId: "greenheart-aecb6",
-        storageBucket: "greenheart-aecb6.firebasestorage.app",
-        messagingSenderId: "916232851118",
-        appId: "1:916232851118:web:0f44c80003123b544da73f",
-        measurementId: "G-8KZ017NYMG",
+        apiKey: ApiKey,
+        authDomain: AuthDomain,
+        projectId: ProjectId,
+        storageBucket: StorageBucket,
+        messagingSenderId: MessagingSenderId,
+        appId: AppId,
+        measurementId: MeasurementId,
       )
     );
   } else {
@@ -32,14 +33,16 @@ Future<void> main() async {
 }
 
 class MyApp extends StatelessWidget {
-  static final homeKey = GlobalKey<MyHomePageState>();
   const MyApp({super.key});
 
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return MaterialApp.router(
       title: 'Flutter Demo',
+      routerConfig: appRouter,
+      debugShowCheckedModeBanner: false,
+
       theme: ThemeData(
         useMaterial3: true,
         colorScheme: ColorScheme.fromSeed(
@@ -56,8 +59,6 @@ class MyApp extends StatelessWidget {
             ),
         ),
       ),
-
-      home: const MyHomePage(title: 'Home Page'),
     );
   }
 }
