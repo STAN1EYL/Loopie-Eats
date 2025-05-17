@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "175815622142",
+    "project_id": "green-heart-bfa37",
+    "storage_bucket": "green-heart-bfa37.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:175815622142:android:f03dfaa97144560fa854af",
+        "android_client_info": {
+          "package_name": "com.example.flutter_application_2"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCvhq60BNNW9TGFGJs1OYzeqfE1ucP7Fxs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
