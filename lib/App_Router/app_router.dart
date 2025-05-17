@@ -1,4 +1,5 @@
 // lib/app_router.dart
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_2/Alerts_Page/alerts_page.dart';
 import 'package:flutter_application_2/Home_Page(Navgate_Main)/home_page.dart';
@@ -159,6 +160,16 @@ void _goToTab(int i, BuildContext ctx) {
     case 1: ctx.go('/recipe');  break;
     case 2: ctx.go('/alerts');  break;
     case 3: ctx.go('/share');   break;
-    case 4: ctx.go('/profile'); break;
+    case 4:
+      final user = FirebaseAuth.instance.currentUser;
+      if (user != null) {
+        // 已登入就留在 Dashboard
+        ctx.go('/dashboard');
+      } else {
+        // 未登入就進 Profile 登入
+        ctx.go('/profile');
+      }
+      break;
+    //case 4: ctx.go('/profile'); break;
   }
 }

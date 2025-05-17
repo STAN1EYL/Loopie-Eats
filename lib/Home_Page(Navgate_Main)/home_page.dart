@@ -3,7 +3,6 @@ import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_application_2/AppAssets/AppAssetsPath.dart';
-import 'package:flutter_application_2/NavigatorFunction/app_shell.dart';
 import 'package:flutter_application_2/Recipe_Page/recipe1_page.dart';
 import 'package:flutter_application_2/Profile_Page/profile_page.dart';
 import 'package:flutter_application_2/Alerts_Page/alerts_page.dart';

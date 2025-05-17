@@ -7,20 +7,19 @@ import 'package:flutter_application_2/consts.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_gemini/flutter_gemini.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter_application_2/NavigatorFunction/app_shell.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   if(kIsWeb) {
     await Firebase.initializeApp(
       options: FirebaseOptions(
-        apiKey: "AIzaSyArYiYo8U2dg5tcw2A4fsMwTk8MDJCMsx8",
-        authDomain: "greenheart-aecb6.firebaseapp.com",
-        projectId: "greenheart-aecb6",
-        storageBucket: "greenheart-aecb6.firebasestorage.app",
-        messagingSenderId: "916232851118",
-        appId: "1:916232851118:web:0f44c80003123b544da73f",
-        measurementId: "G-8KZ017NYMG",
+        apiKey: ApiKey,
+        authDomain: AuthDomain,
+        projectId: ProjectId,
+        storageBucket: StorageBucket,
+        messagingSenderId: MessagingSenderId,
+        appId: AppId,
+        measurementId: MeasurementId,
       )
     );
   } else {

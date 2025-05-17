@@ -56,6 +56,16 @@ class ProfilePageState extends State<ProfilePage>
 
   @override
   Widget build(BuildContext content) {
+  // 如果已登入，就自動跳到 Dashboard
+    final user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      // 這個 go 會 replace 掉現在的 /profile
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        context.go('/dashboard');
+      });
+      // 先回傳一個空容器，等導航結束後再重畫
+      return SizedBox.shrink();
+    }
     return Scaffold(
       body: Center(
         
@@ -118,7 +128,7 @@ class ProfilePageState extends State<ProfilePage>
                           ),
                           labelColor: Colors.black,
                           unselectedLabelColor: Colors.grey,
-                          tabs: const <Widget>[Tab(text: 'Login'), Tab(text: 'Sign Up')],
+                          tabs: const <Widget>[Tab(text: 'Log In'), Tab(text: 'Sign Up')],
                         ),
                     ),
                     Expanded(
@@ -178,7 +188,7 @@ class ProfilePageState extends State<ProfilePage>
                                         _login();
                                       },
                                       icon: const Icon(Icons.login_rounded, size: 18),
-                                      label: Text('Sign In', style: GoogleFonts.quicksand(fontSize: 16)),
+                                      label: Text('Log In', style: GoogleFonts.quicksand(fontSize: 16)),
                                     ),
                                   ),
                                   SizedBox(height: 20),
@@ -186,9 +196,10 @@ class ProfilePageState extends State<ProfilePage>
                                   SizedBox(
                                     width: double.infinity,
                                     height: 48,
+                                    /*
                                     child: ElevatedButton.icon(
                                       style: ElevatedButton.styleFrom(
-                                        backgroundColor: const Color(0xFF7DA969),
+                                        backgroundColor: const Color.fromARGB(255, 255, 255, 255),
                                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                                       ),
                                       onPressed: () async {
@@ -200,6 +211,7 @@ class ProfilePageState extends State<ProfilePage>
                                       icon: const Icon(Icons.logout_outlined, size: 18),
                                       label: Text('Sign Out', style: GoogleFonts.quicksand(fontSize: 16)),
                                     ),
+                                    */
                                   ),
                                 ],
                               ),
