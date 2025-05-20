@@ -1,4 +1,4 @@
-# flutter_application_2
+# Loopie-Eats
 
 A new Flutter project.
 
